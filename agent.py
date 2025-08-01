@@ -8,6 +8,20 @@ from anthropic.types.message import Message
 from tools.read_file import READ_FILE_DEFINITION
 from tools.list_directory import LIST_DIRECTORY_DEFINITION
 from tools.edit_file import EDIT_FILE_DEFINITION
+from tools.create_file import CREATE_FILE_DEFINITION
+from tools.delete_file import DELETE_FILE_DEFINITION
+from tools.move_file import MOVE_FILE_DEFINITION
+from tools.search_files import SEARCH_FILES_DEFINITION
+from tools.get_file_info import GET_FILE_INFO_DEFINITION
+from tools.create_directory import CREATE_DIRECTORY_DEFINITION
+from tools.delete_directory import DELETE_DIRECTORY_DEFINITION
+from tools.move_directory import MOVE_DIRECTORY_DEFINITION
+from tools.copy_directory import COPY_DIRECTORY_DEFINITION
+from tools.clean_directory import CLEAN_DIRECTORY_DEFINITION
+from tools.run_script import RUN_SCRIPT_DEFINITION
+from tools.run_tests import RUN_TESTS_DEFINITION
+from tools.lint_code import LINT_CODE_DEFINITION
+from tools.install_package import INSTALL_PACKAGE_DEFINITION
 
 dotenv.load_dotenv()
 
@@ -134,7 +148,21 @@ def main():
     tools: List[ToolDefinition] = [
         ToolDefinition(**READ_FILE_DEFINITION),
         ToolDefinition(**LIST_DIRECTORY_DEFINITION),
-        ToolDefinition(**EDIT_FILE_DEFINITION)
+        ToolDefinition(**EDIT_FILE_DEFINITION),
+        ToolDefinition(**CREATE_FILE_DEFINITION),
+        ToolDefinition(**DELETE_FILE_DEFINITION),
+        ToolDefinition(**MOVE_FILE_DEFINITION),
+        ToolDefinition(**SEARCH_FILES_DEFINITION),
+        ToolDefinition(**GET_FILE_INFO_DEFINITION),
+        ToolDefinition(**CREATE_DIRECTORY_DEFINITION),
+        ToolDefinition(**DELETE_DIRECTORY_DEFINITION),
+        ToolDefinition(**MOVE_DIRECTORY_DEFINITION),
+        ToolDefinition(**COPY_DIRECTORY_DEFINITION),
+        ToolDefinition(**CLEAN_DIRECTORY_DEFINITION),
+        ToolDefinition(**RUN_SCRIPT_DEFINITION),
+        ToolDefinition(**RUN_TESTS_DEFINITION),
+        ToolDefinition(**LINT_CODE_DEFINITION),
+        ToolDefinition(**INSTALL_PACKAGE_DEFINITION)
     ]
     agent = Agent(client, input, tools)
     agent.run()
