@@ -8,7 +8,7 @@ from anthropic.types.message import Message
 from tools.read_file import READ_FILE_DEFINITION
 from tools.list_directory import LIST_DIRECTORY_DEFINITION
 from tools.edit_file import EDIT_FILE_DEFINITION
-from tools.sync_mcp_wrapper import PROPER_MCP_FILESYSTEM_DEFINITION, PROPER_MCP_GIT_DEFINITION, PROPER_MCP_REFRESH_TOOLS_DEFINITION, PROPER_MCP_LIST_TOOLS_DEFINITION
+from tools.sync_mcp_wrapper import SYNC_MCP_FILESYSTEM_DEFINITION, SYNC_MCP_GIT_DEFINITION, SYNC_MCP_REFRESH_TOOLS_DEFINITION, SYNC_MCP_LIST_TOOLS_DEFINITION
 from tools.run_script import RUN_SCRIPT_DEFINITION
 from tools.run_tests import RUN_TESTS_DEFINITION
 from tools.lint_code import LINT_CODE_DEFINITION
@@ -141,10 +141,10 @@ def main():
         ToolDefinition(**READ_FILE_DEFINITION),
         ToolDefinition(**LIST_DIRECTORY_DEFINITION),
         ToolDefinition(**EDIT_FILE_DEFINITION),
-        ToolDefinition(**PROPER_MCP_FILESYSTEM_DEFINITION),
-        ToolDefinition(**PROPER_MCP_GIT_DEFINITION),
-        ToolDefinition(**PROPER_MCP_REFRESH_TOOLS_DEFINITION),
-        ToolDefinition(**PROPER_MCP_LIST_TOOLS_DEFINITION),
+        ToolDefinition(**SYNC_MCP_FILESYSTEM_DEFINITION),
+        ToolDefinition(**SYNC_MCP_GIT_DEFINITION),
+        ToolDefinition(**SYNC_MCP_REFRESH_TOOLS_DEFINITION),
+        ToolDefinition(**SYNC_MCP_LIST_TOOLS_DEFINITION),
         ToolDefinition(**RUN_SCRIPT_DEFINITION),
         ToolDefinition(**RUN_TESTS_DEFINITION),
         ToolDefinition(**LINT_CODE_DEFINITION),
