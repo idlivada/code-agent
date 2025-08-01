@@ -74,8 +74,16 @@ npm install @modelcontextprotocol/server-filesystem @cyanheads/git-mcp-server
 3. **`proper_mcp_refresh_tools`** - Refresh MCP tool caches
 4. **`proper_mcp_list_tools`** - List available MCP tools
 
-### Legacy Tools (9 tools):
-- File operations, execution, testing, etc.
+### Core Development Tools (9 tools):
+5. **`read_file`** - Read file contents
+6. **`list_directory`** - Explore directory structure
+7. **`edit_file`** - Edit existing files
+8. **`run_script`** - Execute Python scripts
+9. **`run_tests`** - Run test frameworks
+10. **`lint_code`** - Code quality checks
+11. **`install_package`** - Package management
+12. **`generate_code`** - Code generation
+13. **`check_security`** - Security analysis
 
 ## Usage Examples
 
@@ -130,6 +138,11 @@ proper_mcp_git(tool_name="commit", message="Auto-commit")
 - Automatic tool discovery
 - No hardcoded operations
 
+### 6. **Clean Architecture**
+- Removed all old MCP implementations
+- Single source of truth for MCP operations
+- Minimal codebase maintenance
+
 ## How It Works
 
 ### 1. **Server Connection**
@@ -182,6 +195,7 @@ def sync_mcp_operation(server_type: str, tool_name: str, **kwargs) -> str:
 | **Tool Discovery** | Manual JSON-RPC | Automatic via `list_tools()` |
 | **Performance** | Process per call | Connection pooling |
 | **Maintainability** | High (manual) | Low (automatic) |
+| **Codebase Size** | Large (multiple files) | Small (2 core files) |
 
 ## Adding New MCP Servers
 
@@ -238,5 +252,6 @@ The proper MCP integration provides:
 - ✅ **Performance optimization**
 - ✅ **Future-proof architecture**
 - ✅ **Zero maintenance for new operations**
+- ✅ **Clean, minimal codebase**
 
 This is the **recommended approach** for MCP integration in production environments. 
