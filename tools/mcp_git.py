@@ -1,16 +1,19 @@
 import subprocess
+import json
 import os
-import sys
-from typing import Optional
+from typing import Dict, Any, Optional
 
-def git_operation(operation: str, args: str = "", message: str = "") -> str:
-    """Perform various git operations."""
+def mcp_git_operation(operation: str, args: str = "", message: str = "", force: bool = False) -> str:
+    """Perform git operations using the MCP git server."""
     try:
         # Validate parameters
         if not operation:
             raise ValueError("Git operation cannot be empty")
         
-        # Prepare command based on operation
+        # This is a placeholder for MCP git integration
+        # In a real implementation, this would communicate with the MCP git server
+        # For now, we'll simulate the operations using local git commands
+        
         cmd = ["git"]
         
         if operation == "status":
@@ -59,6 +62,32 @@ def git_operation(operation: str, args: str = "", message: str = "") -> str:
             cmd.extend(["stash", "pop"])
         elif operation == "remote":
             cmd.extend(["remote", "-v"])
+        elif operation == "clone":
+            if not args:
+                raise ValueError("Repository URL is required for clone operation")
+            cmd.extend(["clone", args])
+        elif operation == "init":
+            cmd.extend(["init"])
+            if args:
+                cmd.extend(args.split())
+        elif operation == "merge":
+            cmd.extend(["merge"])
+            if args:
+                cmd.extend(args.split())
+        elif operation == "rebase":
+            cmd.extend(["rebase"])
+            if args:
+                cmd.extend(args.split())
+        elif operation == "reset":
+            cmd.extend(["reset"])
+            if args:
+                cmd.extend(args.split())
+        elif operation == "clean":
+            cmd.extend(["clean"])
+            if force:
+                cmd.append("-f")
+            if args:
+                cmd.extend(args.split())
         else:
             raise ValueError(f"Unsupported git operation: {operation}")
         
@@ -78,6 +107,8 @@ def git_operation(operation: str, args: str = "", message: str = "") -> str:
             output.append(f"📝 Arguments: {args}")
         if message:
             output.append(f"💬 Message: {message}")
+        if force:
+            output.append(f"⚠️  Force mode: enabled")
         output.append(f"📊 Exit Code: {result.returncode}")
         
         if result.stdout:
@@ -102,15 +133,15 @@ def git_operation(operation: str, args: str = "", message: str = "") -> str:
         raise Exception(f"Error performing git {operation}: {str(e)}")
 
 # Tool definition
-GIT_OPERATIONS_DEFINITION = {
-    "name": "git_operations",
-    "description": "Perform various git operations like status, commit, diff, log, branch, etc.",
+MCP_GIT_DEFINITION = {
+    "name": "mcp_git",
+    "description": "Perform git operations using the MCP git server (status, add, commit, diff, log, branch, checkout, pull, push, stash, clone, init, merge, rebase, reset, clean).",
     "input_schema": {
         "type": "object",
         "properties": {
             "operation": {
                 "type": "string",
-                "description": "Git operation to perform: 'status', 'add', 'commit', 'diff', 'log', 'branch', 'checkout', 'pull', 'push', 'stash', 'stash_pop', 'remote'."
+                "description": "Git operation to perform: 'status', 'add', 'commit', 'diff', 'log', 'branch', 'checkout', 'pull', 'push', 'stash', 'stash_pop', 'remote', 'clone', 'init', 'merge', 'rebase', 'reset', 'clean'."
             },
             "args": {
                 "type": "string",
@@ -121,10 +152,15 @@ GIT_OPERATIONS_DEFINITION = {
                 "type": "string",
                 "description": "Commit message (for commit operation).",
                 "default": ""
+            },
+            "force": {
+                "type": "boolean",
+                "description": "Force mode for destructive operations (clean, reset --hard, etc.).",
+                "default": False
             }
         },
         "required": ["operation"],
         "additionalProperties": False
     },
-    "tool_function": git_operation
+    "tool_function": mcp_git_operation
 } 
