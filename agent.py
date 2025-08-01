@@ -7,6 +7,7 @@ from anthropic.types.message import Message
 
 from tools.read_file import READ_FILE_DEFINITION
 from tools.list_directory import LIST_DIRECTORY_DEFINITION
+from tools.edit_file import EDIT_FILE_DEFINITION
 
 dotenv.load_dotenv()
 
@@ -111,10 +112,15 @@ class Agent:
         if not tool:
             return {"tool_use_id": tool_id, "content": "tool not found", "is_error": True}
         
+        print(f"🔧 Tool Call: {tool_name}({tool_input})")
+        print(f"🔍 Tool Input Keys: {list(tool_input.keys())}")
+        print(f"🔍 Tool Input Values: {list(tool_input.values())}")
         try:
             response = tool.tool_function(**tool_input)
+            print(f"✅ Tool Result: {response}")
             return {"tool_use_id": tool_id, "content": response, "is_error": False}
         except Exception as e:
+            print(f"❌ Tool Error: {str(e)}")
             return {"tool_use_id": tool_id, "content": str(e), "is_error": True}
 
 class Tool:
@@ -127,7 +133,8 @@ def main():
     client = anthropic.Anthropic()
     tools: List[ToolDefinition] = [
         ToolDefinition(**READ_FILE_DEFINITION),
-        ToolDefinition(**LIST_DIRECTORY_DEFINITION)
+        ToolDefinition(**LIST_DIRECTORY_DEFINITION),
+        ToolDefinition(**EDIT_FILE_DEFINITION)
     ]
     agent = Agent(client, input, tools)
     agent.run()
