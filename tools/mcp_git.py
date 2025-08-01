@@ -1,7 +1,7 @@
-import subprocess
 import json
 import os
 from typing import Dict, Any, Optional
+from .mcp_client import create_git_client
 
 def mcp_git_operation(operation: str, args: str = "", message: str = "", force: bool = False) -> str:
     """Perform git operations using the MCP git server."""
@@ -10,127 +10,121 @@ def mcp_git_operation(operation: str, args: str = "", message: str = "", force: 
         if not operation:
             raise ValueError("Git operation cannot be empty")
         
-        # This is a placeholder for MCP git integration
-        # In a real implementation, this would communicate with the MCP git server
-        # For now, we'll simulate the operations using local git commands
+        # Create MCP client
+        client = create_git_client()
         
-        cmd = ["git"]
+        # Prepare arguments based on operation
+        arguments = {}
         
         if operation == "status":
-            cmd.extend(["status"])
+            arguments = {}
+            
         elif operation == "add":
-            cmd.extend(["add"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"paths": args.split()}
             else:
-                cmd.append(".")
+                arguments = {"paths": ["."]}
+                
         elif operation == "commit":
-            cmd.extend(["commit"])
             if message:
-                cmd.extend(["-m", message])
+                arguments = {"message": message}
             else:
-                cmd.append("-m", "Auto-commit by AI agent")
+                arguments = {"message": "Auto-commit by AI agent"}
+                
         elif operation == "diff":
-            cmd.extend(["diff"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "log":
-            cmd.extend(["log", "--oneline", "-10"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {"args": ["--oneline", "-10"]}
+                
         elif operation == "branch":
-            cmd.extend(["branch"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "checkout":
-            cmd.extend(["checkout"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                raise ValueError("Branch or path required for checkout operation")
+                
         elif operation == "pull":
-            cmd.extend(["pull"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "push":
-            cmd.extend(["push"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "stash":
-            cmd.extend(["stash"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "stash_pop":
-            cmd.extend(["stash", "pop"])
+            arguments = {}
+            
         elif operation == "remote":
-            cmd.extend(["remote", "-v"])
+            arguments = {}
+            
         elif operation == "clone":
             if not args:
                 raise ValueError("Repository URL is required for clone operation")
-            cmd.extend(["clone", args])
+            arguments = {"url": args}
+            
         elif operation == "init":
-            cmd.extend(["init"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                arguments = {}
+                
         elif operation == "merge":
-            cmd.extend(["merge"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                raise ValueError("Branch required for merge operation")
+                
         elif operation == "rebase":
-            cmd.extend(["rebase"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                raise ValueError("Branch required for rebase operation")
+                
         elif operation == "reset":
-            cmd.extend(["reset"])
             if args:
-                cmd.extend(args.split())
+                arguments = {"args": args.split()}
+            else:
+                raise ValueError("Reset target required")
+                
         elif operation == "clean":
-            cmd.extend(["clean"])
+            clean_args = []
             if force:
-                cmd.append("-f")
+                clean_args.append("-f")
             if args:
-                cmd.extend(args.split())
+                clean_args.extend(args.split())
+            arguments = {"args": clean_args}
+            
         else:
             raise ValueError(f"Unsupported git operation: {operation}")
         
-        # Execute git command
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=60,
-            cwd=os.getcwd()
-        )
+        # Call the MCP server
+        result = client.call_tool(operation, arguments)
+        return f"✅ MCP git {operation} completed successfully:\n{result}"
         
-        # Format output
-        output = []
-        output.append(f"🔧 Git operation: {operation}")
-        if args:
-            output.append(f"📝 Arguments: {args}")
-        if message:
-            output.append(f"💬 Message: {message}")
-        if force:
-            output.append(f"⚠️  Force mode: enabled")
-        output.append(f"📊 Exit Code: {result.returncode}")
-        
-        if result.stdout:
-            output.append(f"\n📤 STDOUT:\n{result.stdout}")
-        
-        if result.stderr:
-            output.append(f"\n⚠️  STDERR:\n{result.stderr}")
-        
-        # Interpret results
-        if result.returncode == 0:
-            output.append(f"\n✅ Git {operation} completed successfully")
-        elif result.returncode == 1:
-            output.append(f"\n⚠️  Git {operation} completed with warnings")
-        else:
-            output.append(f"\n❌ Git {operation} failed")
-        
-        return "\n".join(output)
-        
-    except subprocess.TimeoutExpired:
-        raise Exception(f"Git operation timed out after 60 seconds")
     except Exception as e:
-        raise Exception(f"Error performing git {operation}: {str(e)}")
+        raise Exception(f"Error performing MCP git {operation}: {str(e)}")
 
 # Tool definition
 MCP_GIT_DEFINITION = {
